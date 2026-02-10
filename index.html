@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Kuis Berhadiah</title>
+    <style>
+      body {
+        font-family: Arial;
+        background: #f4f6f8;
+        text-align: center;
+        margin-top: 50px;
+      }
+      .box {
+        background: white;
+        width: 350px;
+        margin: auto;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #ccc;
+      }
+      button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        font-size: 16px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <h2>🎁 Kuis Berhadiah 🎁</h2>
+      <p id="soal">Soal</p>
+
+      <button onclick="jawab(0)" id="opsi0"></button>
+      <button onclick="jawab(1)" id="opsi1"></button>
+      <button onclick="jawab(2)" id="opsi2"></button>
+      <button onclick="jawab(3)" id="opsi3"></button>
+
+      <h3 id="hasil"></h3>
+      <h2>Skor: <span id="skor">0</span></h2>
+    </div>
+
+    <script>
+      let skor = 0;
+      let indexSoal = 0;
+
+      const soalKuis = [
+        {
+          soal: "Ibu kota Indonesia adalah?",
+          opsi: ["Bandung", "Surabaya", "Jakarta", "Medan"],
+          jawaban: "Jakarta",
+        },
+        { soal: "2 + 3 = ?", opsi: [5, 6, 7, 8], jawaban: 5 },
+        {
+          soal: "Siapa presiden pertama Indonesia?",
+          opsi: ["Ir. Soekarno", "B. J. Habibie", "Joko Widodo", "Prabowo"],
+          jawaban: "Ir. Soekarno",
+        },
+        {
+          soal: "Jumlah hari dalam satu minggu adalah...",
+          opsi: [6, 5, 2, 7],
+          jawaban: 7,
+        },
+        {
+          soal: "Air membeku pada suhu?",
+          opsi: [
+            "10 derajat celcius",
+            "0 derajat celcius",
+            "5 derajat celcius",
+            "100 derajat celcius",
+          ],
+          jawaban: "0 derajat celcius",
+        },
+      ];
+
+      let salahSoalKritis = false; // tanda jika soal penting salah
+
+      function tampilSoal() {
+        if (indexSoal >= soalKuis.length) {
+          document.getElementById("soal").innerHTML = "🎉 Kuis Selesai!";
+          document.getElementById("hasil").innerHTML =
+            "Skor akhir kamu: " + skor;
+
+          let hadiah;
+          if (skor <= 0) {
+            hadiah = "🥴 Zonkk 🥴";
+          } else if (skor >= 40) {
+            hadiah = "🌴 Selamat Anda Mendapatkan Kebun Sawit 10 Hektar 🌴";
+          } else if (skor >= 25) {
+            hadiah = "💵 Selamat Anda Mendapat Uang Tunai 1.000.000,00 💵";
+          } else {
+            hadiah = "💵 Anda Mendapat Uang Tunai 50.000,00 💵";
+          }
+          document.getElementById("skor").innerHTML += " | " + hadiah;
+
+          for (let i = 0; i < 4; i++)
+            document.getElementById("opsi" + i).style.display = "none";
+          return;
+        }
+
+        let data = soalKuis[indexSoal];
+        document.getElementById("soal").innerHTML = data.soal;
+
+        let opsi = [...data.opsi];
+        opsi.sort(() => Math.random() - 0.5);
+
+        for (let i = 0; i < 4; i++) {
+          let btn = document.getElementById("opsi" + i);
+          btn.innerHTML = opsi[i];
+          btn.value = opsi[i];
+          btn.style.display = "block";
+        }
+      }
+
+      function jawab(index) {
+        let pilihan = document.getElementById("opsi" + index).value;
+        let jawabanBenar = soalKuis[indexSoal].jawaban;
+
+        if (indexSoal === 0 && pilihan != jawabanBenar) {
+          salahSoalKritis = true;
+        }
+
+        if (pilihan == jawabanBenar) {
+          document.getElementById("hasil").innerHTML = "✅ Benar!";
+          skor += 10;
+        } else {
+          document.getElementById("hasil").innerHTML =
+            "❌ Salah! Jawaban benar: " + jawabanBenar;
+          skor -= 5;
+        }
+
+        document.getElementById("skor").innerHTML = skor;
+        indexSoal++;
+        setTimeout(tampilSoal, 800);
+      }
+
+      tampilSoal();
+    </script>
+  </body>
+</html>
